@@ -6,7 +6,8 @@ export interface Blueprint {
         id: string,
         data: {
             name: string,
-            component_id: string
+            component_id: string,
+            input_mapping: {}
         }
     }>
 }

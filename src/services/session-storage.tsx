@@ -6,6 +6,6 @@ export function getCurrentBlueprint(): Blueprint | null {
   return JSON.parse(data) as Blueprint;
 }
 
-export function saveCurrentBlueprint(preferences: Blueprint): void {
-  sessionStorage.setItem('currentBlueprint', JSON.stringify(preferences));
+export function saveCurrentBlueprint(blueprint: Blueprint): void {
+  sessionStorage.setItem('currentBlueprint', JSON.stringify(blueprint));
 }
