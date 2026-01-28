@@ -11,7 +11,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Base />} />
-          <Route path="/form" element={<FormPage />} />
+          <Route path="/form/:id" element={<FormPage />} />
         </Routes>
       </div>
   );
