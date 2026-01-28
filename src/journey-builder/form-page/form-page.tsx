@@ -1,6 +1,15 @@
+import { useNavigate } from 'react-router-dom';
+
 function FormPage() {
+    const navigate = useNavigate();
+
+    function handleClick() {
+        navigate('/');
+    }
     return (
-        <div></div>
+        <div>
+            <button onClick={handleClick}>Back</button>
+        </div>
     );
 }
 

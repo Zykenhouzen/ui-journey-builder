@@ -1,10 +1,11 @@
 import GetBlueprint from "../../services/action-blueprint-graph";
-import { useState } from 'react';
+
 import { FormNode } from "../../types/form-node";
 import FormListItem from "./form-list-item";
+import {SaveCurrentBlueprint, GetCurrentBlueprint} from "../../services/session-storage"
 
 function Base() {
-    const [blueprintData, setBlueprintData] = useState([]);
+    
 
     function getForms(dataInput: any){
         if (dataInput && dataInput.nodes) {
@@ -18,8 +19,8 @@ function Base() {
 
     function handleClick() {
         GetBlueprint().then(data => {
-            setBlueprintData(data);
-            console.log(blueprintData)
+            SaveCurrentBlueprint(data);
+            console.log(GetCurrentBlueprint())
         })
     }
 
@@ -29,7 +30,7 @@ function Base() {
                 Get Blueprint
             </button>
             <div>
-                {getForms(blueprintData)}
+                {getForms(GetCurrentBlueprint())}
             </div>
         </div>
     );
