@@ -33,16 +33,18 @@ function Sidepanel({hidden, formId, fieldToChange}: {hidden: boolean, formId: st
         
     }
     return(
-        <Sidebar>
-        <Menu>
-            {extraFieldsBoilerplate.globalData.map((properties) => {return getMenu(properties, blueprint, formId, fieldToChange)})}
-            {blueprint?.forms.map((formIn) => {return getMenuFromForm(formIn, blueprint, formId, fieldToChange);})}
-        </Menu>
-        </Sidebar>
+        <div hidden={hidden}>
+            <Sidebar>
+            <Menu>
+                {extraFieldsBoilerplate.globalData.map((properties) => {return getMenu(hidden, properties, blueprint, formId, fieldToChange)})}
+                {blueprint?.forms.map((formIn) => {return getMenuFromForm(hidden, formIn, blueprint, formId, fieldToChange);})}
+            </Menu>
+            </Sidebar>
+        </div>
     );
 }
 
-function getMenu(property : ExampleProperty,  blueprint: Blueprint | null,formId: string, fieldToChange: string) {
+function getMenu(hidden: boolean, property : ExampleProperty,  blueprint: Blueprint | null,formId: string, fieldToChange: string) {
     if (blueprint == null) {
         console.error("Blueprint Null")
         return ""
@@ -51,13 +53,13 @@ function getMenu(property : ExampleProperty,  blueprint: Blueprint | null,formId
     return(
         <SubMenu label={property.name}>
             {property.fields.map((field => {
-                return (<MenuItem onClick={() => {addFieldMapping(blueprint, formId, fieldToChange, field.id)}}>{field.label}</MenuItem>)
+                return (<MenuItem onClick={() => {hidden=true; addFieldMapping(blueprint, formId, fieldToChange, field.id)}}>{field.label}</MenuItem>)
             })) }
         </SubMenu>
     )
 }
 
-function getMenuFromForm(formDataItem: FormInfo, blueprint: Blueprint | null, formId: string, fieldToChange: string) {
+function getMenuFromForm(hidden: boolean, formDataItem: FormInfo, blueprint: Blueprint | null, formId: string, fieldToChange: string) {
     if (blueprint == null) {
         console.error("Blueprint Null")
         return ""
@@ -65,7 +67,7 @@ function getMenuFromForm(formDataItem: FormInfo, blueprint: Blueprint | null, fo
     return (
         <SubMenu label={displayNameFromFormId(formDataItem.id, blueprint)}>
             {Object.keys(formDataItem.field_schema.properties).map((field => {
-                return (<MenuItem onClick={() => {addFieldMapping(blueprint, formId, fieldToChange, `${displayNameFromFormId(formDataItem.id, blueprint)}.${field}`)}}>{field}</MenuItem>)
+                return (<MenuItem onClick={() => {hidden=true; addFieldMapping(blueprint, formId, fieldToChange, `${displayNameFromFormId(formDataItem.id, blueprint)}.${field}`)}}>{field}</MenuItem>)
             })) }
         </SubMenu>);
 }

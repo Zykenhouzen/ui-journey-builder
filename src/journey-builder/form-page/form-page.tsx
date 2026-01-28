@@ -9,20 +9,20 @@ import SidePanel from './side-panel';
 function FormPage() {
     const navigate = useNavigate();
     const { id } = useParams();
-    const [selectingValue, setSelectingValue] = useState(true);
     const [currentSelectedValue, setCurrentSelectedValue] = useState("")
+    let [hidden, setHidden] = useState(true)
     
     let blueprint = getCurrentBlueprint();
     let currentNode = blueprint?.nodes.find((node) => { return node.id == id} );
     let currentForm = blueprint?.forms.find((form) => { return currentNode?.data.component_id == form.id});
-
+    let mapping: Map<string, string> = new Map(Object.entries(currentNode ? currentNode.data.input_mapping:{}))
     function enableSidebar(fieldToModify: string) {
-        setSelectingValue(false);
+        setHidden(false);
         setCurrentSelectedValue(fieldToModify);
     }
     
     let fieldMap = currentForm ? Object.keys(currentForm.field_schema.properties).map((field) => {
-        return <div>{field} - <input onClick={() => {enableSidebar(field)}} ></input></div>;
+        return <div>{field} - <input onClick={() => {enableSidebar(field)}} value={mapping.get(`${field}`)}></input></div>;
     }) : "";
       
     function handleClick() {
@@ -32,7 +32,7 @@ function FormPage() {
     return (
         <div>
             <div style={{ float:"left", height: '100%' }}>
-                <SidePanel hidden={selectingValue} formId={id?id:""} fieldToChange={currentSelectedValue} ></SidePanel>
+                <SidePanel hidden={hidden} formId={id?id:""} fieldToChange={currentSelectedValue} ></SidePanel>
             </div>
             <div>
                 <button onClick={handleClick}>Back</button>
