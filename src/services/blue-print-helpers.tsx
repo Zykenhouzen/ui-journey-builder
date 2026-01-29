@@ -21,3 +21,12 @@ export function addFieldMapping(blueprint: Blueprint, formId:string, fieldValue:
     console.log(Object.fromEntries(mapping));
     saveCurrentBlueprint(blueprint);
 }
+
+export function removeFieldMapping(blueprint: Blueprint, formId:string, fieldValue:string) {
+    let nodeIndex = blueprint.nodes.findIndex(blueprintNode => formId == blueprintNode.id)
+    let mapping = new Map(Object.entries(blueprint.nodes[nodeIndex].data.input_mapping))
+    mapping.delete(fieldValue)
+    blueprint.nodes[nodeIndex].data.input_mapping = Object.fromEntries(mapping);
+    console.log(Object.fromEntries(mapping));
+    saveCurrentBlueprint(blueprint);
+}

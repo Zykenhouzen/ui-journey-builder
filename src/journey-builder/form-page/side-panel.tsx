@@ -3,10 +3,12 @@ import {displayNameFromFormId, addFieldMapping } from '../../services/blue-print
 import { getCurrentBlueprint } from '../../services/session-storage';
 import { FormInfo } from '../../types/form-info';
 import { Blueprint } from '../../types/blueprint';
+import { useState, useEffect } from 'react'
 import { ExampleGlobalData, ExampleProperty } from '../../types/example-global-data'
 
-function Sidepanel({hidden, formId, fieldToChange}: {hidden: boolean, formId: string, fieldToChange: string}) {
+function Sidepanel({hide, formId, fieldToChange}: {hide: Function, formId: string, fieldToChange: string}) {
     let blueprint: Blueprint | null = getCurrentBlueprint();
+
     let extraFieldsBoilerplate: ExampleGlobalData = {
         globalData: [
             {
@@ -33,18 +35,18 @@ function Sidepanel({hidden, formId, fieldToChange}: {hidden: boolean, formId: st
         
     }
     return(
-        <div hidden={hidden}>
+        <div>
             <Sidebar>
             <Menu>
-                {extraFieldsBoilerplate.globalData.map((properties) => {return getMenu(hidden, properties, blueprint, formId, fieldToChange)})}
-                {blueprint?.forms.map((formIn) => {return getMenuFromForm(hidden, formIn, blueprint, formId, fieldToChange);})}
+                {extraFieldsBoilerplate.globalData.map((properties) => {return getMenu(hide,properties, blueprint, formId, fieldToChange)})}
+                {blueprint?.forms.map((formIn) => {return getMenuFromForm(hide, formIn, blueprint, formId, fieldToChange);})}
             </Menu>
             </Sidebar>
         </div>
     );
 }
 
-function getMenu(hidden: boolean, property : ExampleProperty,  blueprint: Blueprint | null,formId: string, fieldToChange: string) {
+function getMenu(hide: Function, property : ExampleProperty,  blueprint: Blueprint | null,formId: string, fieldToChange: string) {
     if (blueprint == null) {
         console.error("Blueprint Null")
         return ""
@@ -53,13 +55,13 @@ function getMenu(hidden: boolean, property : ExampleProperty,  blueprint: Bluepr
     return(
         <SubMenu label={property.name}>
             {property.fields.map((field => {
-                return (<MenuItem onClick={() => {hidden=true; addFieldMapping(blueprint, formId, fieldToChange, field.id)}}>{field.label}</MenuItem>)
+                return (<MenuItem onClick={() => { hide();addFieldMapping(blueprint, formId, fieldToChange, field.id)}}>{field.label}</MenuItem>)
             })) }
         </SubMenu>
     )
 }
 
-function getMenuFromForm(hidden: boolean, formDataItem: FormInfo, blueprint: Blueprint | null, formId: string, fieldToChange: string) {
+function getMenuFromForm(hide: Function, formDataItem: FormInfo, blueprint: Blueprint | null, formId: string, fieldToChange: string) {
     if (blueprint == null) {
         console.error("Blueprint Null")
         return ""
@@ -67,7 +69,7 @@ function getMenuFromForm(hidden: boolean, formDataItem: FormInfo, blueprint: Blu
     return (
         <SubMenu label={displayNameFromFormId(formDataItem.id, blueprint)}>
             {Object.keys(formDataItem.field_schema.properties).map((field => {
-                return (<MenuItem onClick={() => {hidden=true; addFieldMapping(blueprint, formId, fieldToChange, `${displayNameFromFormId(formDataItem.id, blueprint)}.${field}`)}}>{field}</MenuItem>)
+                return (<MenuItem onClick={() => {hide();addFieldMapping(blueprint, formId, fieldToChange, `${displayNameFromFormId(formDataItem.id, blueprint)}.${field}`)}}>{field}</MenuItem>)
             })) }
         </SubMenu>);
 }
